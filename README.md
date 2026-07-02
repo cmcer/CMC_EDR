@@ -14,8 +14,25 @@ npm run typecheck # tsc -b --noEmit
 npm run build      # production build
 ```
 
-MSW starts automatically in dev (`src/main.tsx`) and intercepts every
-`/api/dashboard/*` call — there is no real backend to run.
+MSW starts automatically — in dev *and* in production builds
+(`src/main.tsx`) — and intercepts every `/api/dashboard/*` call. There is no
+real backend; the mock layer is the only data source, including on the
+GitHub Pages deploy below.
+
+## Deployment (GitHub Pages)
+
+Pushing to `main` triggers `.github/workflows/deploy-pages.yml`, which builds
+the app and deploys `dist/` via `actions/deploy-pages`. Live at
+`https://cmcer.github.io/CMC_EDR/`.
+
+One-time setup required in the repo (not doable from the CLI): **Settings →
+Pages → Source → GitHub Actions**.
+
+`vite.config.ts` hardcodes `base: "/CMC_EDR/"` to match this project's GitHub
+Pages URL — `npm run build` and `npm run preview` both use it. Only
+`npm run dev` overrides it back to `/` via the `--base` CLI flag (which wins
+over the config value), so local development isn't affected. If you fork
+this repo under a different name, update `base` to match.
 
 If you ever regenerate `node_modules`, MSW needs its service worker file in
 `public/`; it's already committed, but it can be regenerated with:
